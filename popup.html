@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bookmarked Items</title>
+    <style>
+      body {
+        width: 400px; /* 横幅を倍に変更 */
+        font-family: Arial, sans-serif;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      li {
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h4>Bookmarked Items</h4>
+    <ul id="bookmarkList"></ul>
+    <button id="clearBookmarks">Clear All</button>
+    <button id="downloadCsv">Download CSV</button> <!-- CSV出力用ボタン -->
+
+    <script src="popup.js"></script>
+  </body>
+</html>
