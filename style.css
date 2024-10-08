@@ -1,0 +1,88 @@
+/* ポップアップ全体のスタイル */
+body {
+  font-family: Arial, sans-serif;
+  margin: 10px;
+  width: 100%; /* 横幅を調整して折り返しを防ぐ */
+}
+
+/* h2タグのスタイル（折り返しを防ぐ） */
+h2 {
+  white-space: nowrap; /* 折り返しを防ぐ */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ブックマークリストコンテナ */
+#bookmarkListContainer {
+  max-height: 100px; /* 表示エリアの高さを制限 */
+  overflow-y: auto;  /* 縦方向にスクロールを有効に */
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 1000px; /* 横幅を調整 */
+}
+
+/* リストのスタイル */
+#bookmarkList {
+  list-style-type: none;
+  padding: 0;
+  white-space: nowrap; /* 折り返しを防ぐ */
+}
+
+#bookmarkList li {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+  overflow: hidden;
+  text-overflow: ellipsis; /* はみ出した部分を省略表示 */
+}
+
+/* ボタンコンテナのスタイル（ボタンを横並びに） */
+.button-container {
+  display: flex;
+  justify-content: space-between; /* ボタンを横に並べてスペースを確保 */
+}
+
+/* ボタンのスタイル */
+button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  flex: 1; /* 横に並べたボタンを均等に配置 */
+  margin: 5px; /* ボタン同士の間隔を調整 */
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* entriesTable のスタイル */
+.entriesTable {
+  width: 100%; /* テーブル全体を親要素の横幅に合わせる */
+  table-layout: fixed; /* テーブル全体の幅を均等にする */
+  border-collapse: collapse; /* テーブルセルの隙間をなくす */
+}
+
+/* テーブルヘッダーやセルのスタイル */
+.entriesTable th, .entriesTable td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+  width: auto; /* 各列が自動的に適切な幅を取るようにする */
+  word-wrap: break-word; /* テキストが長すぎる場合に折り返す */
+}
+
+/* ブックマークの td のスタイル */
+.entriesTable__bookmark {
+  width: 50px; /* ブックマーク列の幅を指定 */
+  text-align: center;
+}
+
+/* カートボタンの td のスタイル */
+.entriesTable__cart {
+  width: 100px; /* カートボタン列の幅を指定 */
+  text-align: center;
+}
+

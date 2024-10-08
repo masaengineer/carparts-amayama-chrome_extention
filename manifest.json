@@ -1,8 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Amayama Bookmark Extension",
+  "name": "Amayama Product Bookmark",
   "version": "1.0",
-  "description": "Bookmark items on Amayama parts pages.",
   "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",
@@ -11,7 +10,8 @@
   "content_scripts": [
     {
       "matches": ["https://www.amayama.com/en/genuine-catalogs/*"],
-      "js": ["content.js"]
+      "js": ["contentScript.js"],
+      "css": ["style.css"]
     }
   ]
 }

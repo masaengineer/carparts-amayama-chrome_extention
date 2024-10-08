@@ -1,62 +1,53 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const bookmarkList = document.getElementById('bookmarkList');
-  const clearButton = document.getElementById('clearBookmarks');
-  const downloadCsvButton = document.getElementById('downloadCsv'); // CSVボタン
+document.addEventListener('DOMContentLoaded', () => {
+  loadBookmarks(); // ブックマークを読み込んで表示
 
-  // Chromeストレージからブックマークを取得して表示
-  chrome.storage.sync.get(['bookmarkedItems'], function(result) {
-    const bookmarkedItems = result.bookmarkedItems || [];
-
-    bookmarkedItems.forEach(item => {
-      const li = document.createElement('li');
-      // ItemIDとタイトルを表示
-      li.textContent = `ID: ${item.id} - Title: ${item.title}`;
-      bookmarkList.appendChild(li);
-    });
-  });
-
-  // クリアボタンをクリックしたときの処理
-  clearButton.addEventListener('click', function() {
-    chrome.storage.sync.remove('bookmarkedItems', function() {
-      alert('All bookmarks cleared.');
-      bookmarkList.innerHTML = '';
-
-      // content.js にメッセージを送信してアイコンを更新
-      chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'updateIcons' });
+  // 全削除ボタンの処理
+  document.getElementById('deleteAll').addEventListener('click', () => {
+    const confirmation = confirm('本当に全てのブックマークを削除しますか？');
+    if (confirmation) {
+      chrome.storage.sync.clear(() => {
+        document.getElementById('bookmarkList').innerHTML = '';
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          chrome.tabs.reload(tabs[0].id);
+        });
       });
-    });
+    }
   });
 
-  // CSV出力ボタンをクリックしたときの処理
-  downloadCsvButton.addEventListener('click', function() {
-    chrome.storage.sync.get(['bookmarkedItems'], function(result) {
-      const bookmarkedItems = result.bookmarkedItems || [];
-
-      if (bookmarkedItems.length > 0) {
-        let csvContent = "data:text/csv;charset=utf-8,ID,Title\n";
-        bookmarkedItems.forEach(function(item) {
-          const titleEscaped = `"${item.title.replace(/"/g, '""')}"`;
-          csvContent += `${item.id},${titleEscaped}\n`;
-        });
-
-        // CSVファイルを生成してダウンロード
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "bookmarked_items.csv");
-        document.body.appendChild(link);
-
-        link.click(); // 自動的にダウンロードを開始
-        document.body.removeChild(link); // リンクを削除
-
-        // content.js にメッセージを送信してアイコンを更新
-        chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-          chrome.tabs.sendMessage(tabs[0].id, { action: 'updateIcons' });
-        });
-      } else {
-        alert("No items to download.");
-      }
-    });
-  });
+  // CSVエクスポートボタンの処理
+  document.getElementById('exportCsv').addEventListener('click', exportBookmarksToCSV);
 });
+
+// ブックマークを読み込んで一覧を表示する関数
+function loadBookmarks() {
+  chrome.storage.sync.get(null, (items) => {
+    const bookmarkList = document.getElementById('bookmarkList');
+    bookmarkList.innerHTML = ''; // 既存のリストをクリア
+
+    for (let id in items) {
+      const li = document.createElement('li');
+      li.textContent = `${items[id].品番} - ${items[id].タイトル}`;
+      bookmarkList.appendChild(li);
+    }
+  });
+}
+
+// ブックマークをCSV形式でエクスポートする関数
+function exportBookmarksToCSV() {
+  chrome.storage.sync.get(null, (items) => {
+    let csvContent = '品番,タイトル\n'; // 正しいカラム名を指定
+    for (let id in items) {
+      const item = items[id];
+      csvContent += `"${item['品番']}","${item['タイトル']}"\n`; // 品番とタイトルを正しく出力
+    }
+
+    // BOM (Byte Order Mark) を付加してUTF-8で出力
+    const bom = "\uFEFF";
+    const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'bookmarks.csv';
+    a.click();
+  });
+}
